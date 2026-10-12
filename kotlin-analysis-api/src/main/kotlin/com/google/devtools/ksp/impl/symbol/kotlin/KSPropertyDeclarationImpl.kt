@@ -110,7 +110,7 @@ class KSPropertyDeclarationImpl private constructor(internal val ktPropertySymbo
     }
     override val annotations: Sequence<KSAnnotation>
         get() =
-            if (ResolverAAImpl.instance.shouldEnableNewFeatures())
+            if (ResolverAAImpl.instance.currentProcessor.apiFeatures.enableBackingFields)
                 annotationsCacheNext
             else
                 annotationsCacheCurrent
@@ -220,7 +220,7 @@ class KSPropertyDeclarationImpl private constructor(internal val ktPropertySymbo
 
     override val backingField: KSBackingField?
         get() =
-            if (ResolverAAImpl.instance.shouldEnableNewFeatures())
+            if (ResolverAAImpl.instance.currentProcessor.apiFeatures.enableBackingFields)
                 backingFieldCache
             else
                 null

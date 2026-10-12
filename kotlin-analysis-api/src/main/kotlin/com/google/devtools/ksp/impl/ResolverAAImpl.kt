@@ -192,8 +192,6 @@ class ResolverAAImpl(
 
     lateinit var currentProcessor: SymbolProcessor
 
-    internal fun shouldEnableNewFeatures(): Boolean = currentProcessor in processorsRegisteredForNewFeatures
-
     lateinit var propertyAsMemberOfCache: MutableMap<Pair<KSPropertyDeclaration, KSType>, KSType>
     lateinit var functionAsMemberOfCache: MutableMap<Pair<KSFunctionDeclaration, KSType>, KSFunction>
     val javaFileManager = project.getService(JavaFileManager::class.java) as KotlinCliJavaFileManagerImpl
@@ -725,7 +723,7 @@ class ResolverAAImpl(
         return resolutionStrategy.getSymbolsWithAnnotation(
             realAnnotationName,
             inDepth,
-            shouldEnableNewFeatures(),
+            currentProcessor.apiFeatures
         )
     }
 
@@ -914,7 +912,7 @@ class ResolverAAImpl(
                 }
             }
 
-            is KSBackingField if shouldEnableNewFeatures() -> TODO("Backing fields are not yet supported in mapToJvmSignatureInternal")
+            is KSBackingField if currentProcessor.apiFeatures.enableBackingFields -> TODO("Backing fields are not yet supported in mapToJvmSignatureInternal")
 
             else -> null
         }
